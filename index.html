@@ -2,123 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3 BHK Villa for Sale in Idigarai | Coimbatore</title>
-
-<meta name="description" content="3 BHK independent villa for sale in Idigarai, Coimbatore. Bank loan available. Clear documents.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coimbatore Properties</title>
 
 <style>
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto}
-.container{max-width:1100px;margin:auto;padding:16px}
-h1,h2,h3{margin:8px 0}
-.price{color:#0b5ed7;font-size:22px;font-weight:700}
-.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:12px}
-.gallery img{width:100%;height:160px;object-fit:cover;border-radius:8px}
-.card{background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;margin-top:16px}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
-.features li{list-style:none;padding:8px;background:#f7f7f7;border-radius:6px}
-.btn{display:inline-block;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:600}
-.btn-whatsapp{background:#25D366;color:#fff}
-footer{text-align:center;font-size:14px;color:#666;margin:30px 0}
+body{font-family:system-ui;margin:0;background:#f7f7f7}
+.container{max-width:1200px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e6e6e6}
+.card img{width:100%;height:200px;object-fit:cover}
+.card-body{padding:14px}
+.price{color:#0b5ed7;font-weight:700}
+.features{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.features span{background:#f1f1f1;padding:6px 10px;border-radius:20px;font-size:13px}
+.actions{display:flex;gap:8px;margin-top:12px}
+.btn{padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600}
+.btn-wa{background:#25D366;color:#fff}
+.btn-view{border:1px solid #ddd;color:#333}
 </style>
 </head>
 
 <body>
-
 <div class="container">
-
-  <!-- PROPERTY TITLE -->
-  <h1 id="title"></h1>
-  <div class="price" id="price"></div>
-  <p id="location"></p>
-
-  <!-- IMAGE GALLERY -->
-  <div class="gallery" id="gallery"></div>
-
-  <!-- DESCRIPTION -->
-  <div class="card">
-    <h2>Property Description</h2>
-    <p id="description"></p>
-  </div>
-
-  <!-- FEATURES -->
-  <div class="card">
-    <h2>Property Features</h2>
-    <ul class="features" id="features"></ul>
-  </div>
-
-  <!-- CTA -->
-  <div class="card">
-    <a id="whatsappBtn" class="btn btn-whatsapp" target="_blank">
-      Enquire on WhatsApp
-    </a>
-  </div>
-
+  <h1>Properties in Coimbatore</h1>
+  <div id="grid" class="grid"></div>
 </div>
 
-<footer>
-  © CoimbatoreVeedu.com
-</footer>
-
 <script>
-/* ==========================================
-   EDIT ONLY THIS SECTION
-========================================== */
-const property = {
-  title: "3 BHK Independent Villa for Sale",
-  price: "₹75 Lakhs",
-  location: "Idigarai, Coimbatore",
-  description: "Spacious 3 BHK independent villa located in a calm residential area. Bank loan available. Clear title and DTCP approved layout.",
-  images: [
-    "images/1.jpg",
-    "images/2.jpg",
-    "images/3.jpg",
-    "images/4.jpg",
-    "images/5.jpg",
-    "images/6.jpg"
-  ],
-  features: [
-    "3 Bedrooms",
-    "3 Bathrooms",
-    "Car Parking",
-    "Modular Kitchen",
-    "Bore + Corporation Water",
-    "DTCP Approved",
-    "Bank Loan Available",
-    "North Facing"
-  ],
-  whatsappNumber: "918111024877"
-};
-/* ========================================== */
+/* ==============================
+   CONFIG (EDIT ONLY THIS)
+============================== */
+const SHEET_ID = "PASTE_YOUR_SHEET_ID_HERE";
+const SHEET_NAME = "Sheet1";
+const WHATSAPP = "918111024877";
 
-/* RENDER */
-document.getElementById("title").textContent = property.title;
-document.getElementById("price").textContent = property.price;
-document.getElementById("location").textContent = property.location;
-document.getElementById("description").textContent = property.description;
+/* ==============================
+   FETCH & RENDER
+============================== */
+const url =
+`https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 
-const gallery = document.getElementById("gallery");
-property.images.forEach(img=>{
-  const i=document.createElement("img");
-  i.src=img;
-  gallery.appendChild(i);
+fetch(url)
+.then(res=>res.json())
+.then(data=>{
+  const grid=document.getElementById("grid");
+  grid.innerHTML=data.map(p=>`
+    <div class="card">
+      <img src="${p.img1}">
+      <div class="card-body">
+        <h3>${p.title}</h3>
+        <small>${p.location}</small>
+        <div class="price">₹${p.price} Lakhs</div>
+        <p>${p.description}</p>
+
+        <div class="features">
+          ${p.features.split(',').map(f=>`<span>${f}</span>`).join('')}
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-wa"
+             target="_blank"
+             href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(p.title+' '+p.location)}">
+             WhatsApp
+          </a>
+
+          <a class="btn btn-view"
+             target="_blank"
+             href="${p.viewlink}">
+             View Project
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
 });
-
-const features = document.getElementById("features");
-property.features.forEach(f=>{
-  const li=document.createElement("li");
-  li.textContent=f;
-  features.appendChild(li);
-});
-
-document.getElementById("whatsappBtn").href =
-  "https://wa.me/" + property.whatsappNumber +
-  "?text=" + encodeURIComponent(
-    property.title + "\n" +
-    property.location + "\n" +
-    property.price
-  );
 </script>
-
 </body>
 </html>
